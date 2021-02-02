@@ -1,0 +1,16 @@
+.cardArea{
+    margin: 1em;
+}
+
+.Ellipsis{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.Ellipsis:hover {
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
