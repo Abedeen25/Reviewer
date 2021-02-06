@@ -1,11 +1,11 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import {Card, Form, Alert, Container} from "react-bootstrap";
-import {Link, useHistory} from "react-router-dom";
-import {useAuth} from "../contexts/AuthContext";
+import { Card, Form, Alert, Container } from "react-bootstrap";
+import { Link, useHistory } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 const Navibar = () => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
+    const [IsSignIn, setIsSignIn] = React.useState(true);
 
     const handleOpen = () => {
         setOpen(true);
@@ -46,20 +47,20 @@ const Navibar = () => {
 
     const emailRef = useRef();
     const passwordRef = useRef();
-    const {login} = useAuth();
+    const { login } = useAuth();
     const history = useHistory();
-    const [error,setError] = useState('');
-    const [loading,setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e)=>{
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try{
+        try {
             setLoading(true);
             setError('');
-            await login(emailRef.current.value,passwordRef.current.value);
+            await login(emailRef.current.value, passwordRef.current.value);
             history.push("/");
-        }catch (error){
+        } catch (error) {
             setError(error)
         }
         setLoading(false);
@@ -74,48 +75,58 @@ const Navibar = () => {
                     <Button theme="light" onClick={handleOpen}>Sign In</Button>
                 </NavItem>
             </Navbar>
+            <div>
+                <Modal
+                    aria-labelledby="transition-modal-title"
+                    aria-describedby="transition-modal-description"
+                    className={classes.modal}
+                    open={open}
+                    onClose={handleClose}
+                    closeAfterTransition
+                    BackdropComponent={Backdrop}
+                    BackdropProps={{
+                        timeout: 500,
+                    }}
+                >
+                    <Fade in={open}>
+                        <Container className='d-flex align-items-center justify-content-center' style={{ minHeight: "20vh", width: "400px", padding: 0 }}>
+                            {IsSignIn ? <div className='w-100' style={{ maxWidth: "400px" }}>
+                                <Card>
+                                    <Card.Body>
+                                        <h2 className='text-center mb-4'>Log in</h2>
+                                        {error ? <Alert variant='danger'>{JSON.stringify(error)}</Alert> : ""}
+                                        <Form onSubmit={handleSubmit}>
 
-            <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                className={classes.modal}
-                open={open}
-                onClose={handleClose}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                }}
-            >
-                <Fade in={open}>
-                    <Container className='d-flex align-items-center justify-content-center' style={{minHeight:"100vh"}}>
-                        <div className='w-100' style={{maxWidth:"400px"}}>
-                            <Card>
-                                <Card.Body>
-                                    <h2 className='text-center mb-4'>Log in</h2>
-                                    {error? <Alert variant='danger'>{JSON.stringify(error)}</Alert>:""}
-                                    <Form onSubmit={handleSubmit}>
+                                            <Form.Group id='email'>
+                                                <Form.Label>Email</Form.Label>
+                                                <Form.Control ref={emailRef} type='email' required />
+                                            </Form.Group>
+                                            <Form.Group id='password'>
+                                                <Form.Label>Password</Form.Label>
+                                                <Form.Control ref={passwordRef} type='password' required />
+                                            </Form.Group>
 
-                                        <Form.Group id='email'>
-                                            <Form.Label>Email</Form.Label>
-                                            <Form.Control ref = {emailRef} type='email' required />
-                                        </Form.Group>
-                                        <Form.Group id='password'>
-                                            <Form.Label>Password</Form.Label>
-                                            <Form.Control ref = {passwordRef} type='password' required />
-                                        </Form.Group>
-
-                                        <Button disabled={loading} className='w-100' type='submit'>Log In</Button>
-                                    </Form>
-                                </Card.Body>
-                            </Card>
-                            <div className='w-100 text-center mt-2'>
-                                Don't Have an Account?<Link to='/signup'>Sign Up!</Link>
-                            </div>
-                        </div>
-                    </Container>
-                </Fade>
-            </Modal>
+                                            <Button disabled={loading} className='w-100' type='submit'>Log In</Button>
+                                        </Form>
+                                        <div className='w-100 text-center mt-2'>
+                                            Don't Have an Account?<Button style={{ color: "#007BFF", padding: "0 5px 0 5px", backgroundColor: "white", border: 0 }}
+                                                onClick={() => {
+                                                    setIsSignIn(!IsSignIn)
+                                                }}>SignUp</Button>
+                                        </div>
+                                    </Card.Body>
+                                </Card>
+                            </div> : <div>
+                                    <Card>
+                                        <Card.Body>
+                                            hello
+                                        </Card.Body>
+                                    </Card>
+                                </div>}
+                        </Container>
+                    </Fade>
+                </Modal>
+            </div>
         </div>
     )
 }
