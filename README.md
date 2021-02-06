@@ -76,4 +76,5 @@ React Icons - `npm install react-icons --save`
 React Router DOM - `npm install --save react-router-dom`  
 Firebase - `npm install --save firebase`  
 Material Ui - `npm install @material-ui/core` , `npm install @material-ui/lab`  
-Icons - `npm install @material-ui/icons`
+Icons - `npm install @material-ui/icons`  
+React-Bootstrap - `npm install react-bootstrap`
