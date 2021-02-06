@@ -74,4 +74,6 @@ Axios - `npm install axios`
 Shards theme - `npm i shards-react`  
 React Icons - `npm install react-icons --save`  
 React Router DOM - `npm install --save react-router-dom`  
-Firebase - `npm install --save firebase`
+Firebase - `npm install --save firebase`  
+Material Ui - `npm install @material-ui/core` , `npm install @material-ui/lab` 
+Icons - `npm install @material-ui/icons`
