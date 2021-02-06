@@ -4,34 +4,19 @@ import {
     Navbar,
     NavbarBrand,
     Nav,
-    InputGroup,
-    InputGroupAddon,
-    InputGroupText,
-    FormInput,
-    Collapse
+    Button,
+    NavItem,
+    NavLink
 } from "shards-react";
 
 const Navibar = () => {
     return (
         <Navbar type="dark" theme="primary" expand="md">
-            <NavbarBrand href="#">THE BOOKSHELF</NavbarBrand>
-
-            {/* <Collapse open={false} navbar>
-                <Nav navbar>
-
-                </Nav>
-
-                <Nav navbar className="ml-auto">
-                    <InputGroup size="sm" seamless>
-                        <InputGroupAddon type="prepend">
-                            <InputGroupText>
-                                <FaSearch />
-                            </InputGroupText>
-                        </InputGroupAddon>
-                        <FormInput className="border-0" placeholder="Search..." />
-                    </InputGroup>
-                </Nav>
-            </Collapse> */}
+            <NavbarBrand>THE BOOKSHELF</NavbarBrand>
+            <div style={{ flex: 'auto' }} />
+            <NavItem>
+                <Button theme="light">Sign In</Button>
+            </NavItem>
         </Navbar>
     )
 }
