@@ -47,6 +47,9 @@ const Navibar = () => {
 
     const emailRef = useRef();
     const passwordRef = useRef();
+    const nameRef = useRef();
+    const confirmPasswordRef = useRef();
+    const {signup} = useAuth();
     const { login } = useAuth();
     const history = useHistory();
     const [error, setError] = useState('');
@@ -61,6 +64,22 @@ const Navibar = () => {
             await login(emailRef.current.value, passwordRef.current.value);
             history.push("/");
         } catch (error) {
+            setError(error)
+        }
+        setLoading(false);
+    }
+
+    const SignUpSubmit = async (e)=>{
+        e.preventDefault();
+        if(passwordRef.current.value !== confirmPasswordRef.current.value){
+            return setError('Passwords do not match!');
+        }
+        try{
+            setLoading(true);
+            setError('');
+            await signup(emailRef.current.value,passwordRef.current.value);
+            history.push("/");
+        }catch (error){
             setError(error)
         }
         setLoading(false);
@@ -119,7 +138,27 @@ const Navibar = () => {
                             </div> : <div>
                                     <Card>
                                         <Card.Body>
-                                            hello
+                                            <h2 className='text-center mb-4'>Sign Up</h2>
+                                            {error? <Alert variant='danger'>{JSON.stringify(error)}</Alert>:""}
+                                            <Form onSubmit={SignUpSubmit}>
+                                                <Form.Group id='name'>
+                                                    <Form.Label>Name</Form.Label>
+                                                    <Form.Control ref = {nameRef} type='text' required />
+                                                </Form.Group>
+                                                <Form.Group id='email'>
+                                                    <Form.Label>Email</Form.Label>
+                                                    <Form.Control ref = {emailRef} type='email' required />
+                                                </Form.Group>
+                                                <Form.Group id='password'>
+                                                    <Form.Label>Password</Form.Label>
+                                                    <Form.Control ref = {passwordRef} type='password' required />
+                                                </Form.Group>
+                                                <Form.Group id='confirm-password'>
+                                                    <Form.Label>Confirm Password</Form.Label>
+                                                    <Form.Control ref = {confirmPasswordRef} type='password' required />
+                                                </Form.Group>
+                                                <Button disabled={loading} className='w-100' type='submit'>Sign Up</Button>
+                                            </Form>
                                         </Card.Body>
                                     </Card>
                                 </div>}
