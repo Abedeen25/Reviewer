@@ -49,7 +49,7 @@ const Navibar = () => {
     const passwordRef = useRef();
     const nameRef = useRef();
     const confirmPasswordRef = useRef();
-    const {signup} = useAuth();
+    const { signup } = useAuth();
     const { login } = useAuth();
     const history = useHistory();
     const [error, setError] = useState('');
@@ -69,17 +69,17 @@ const Navibar = () => {
         setLoading(false);
     }
 
-    const SignUpSubmit = async (e)=>{
+    const SignUpSubmit = async (e) => {
         e.preventDefault();
-        if(passwordRef.current.value !== confirmPasswordRef.current.value){
+        if (passwordRef.current.value !== confirmPasswordRef.current.value) {
             return setError('Passwords do not match!');
         }
-        try{
+        try {
             setLoading(true);
             setError('');
-            await signup(emailRef.current.value,passwordRef.current.value);
+            await signup(emailRef.current.value, passwordRef.current.value);
             history.push("/");
-        }catch (error){
+        } catch (error) {
             setError(error)
         }
         setLoading(false);
@@ -130,35 +130,41 @@ const Navibar = () => {
                                         <div className='w-100 text-center mt-2'>
                                             Don't Have an Account?<Button style={{ color: "#007BFF", padding: "0 5px 0 5px", backgroundColor: "white", border: 0 }}
                                                 onClick={() => {
-                                                    setIsSignIn(!IsSignIn)
+                                                    setIsSignIn(false)
                                                 }}>SignUp</Button>
                                         </div>
                                     </Card.Body>
                                 </Card>
-                            </div> : <div>
+                            </div> : <div className='w-100' style={{ maxWidth: "400px" }}>
                                     <Card>
                                         <Card.Body>
                                             <h2 className='text-center mb-4'>Sign Up</h2>
-                                            {error? <Alert variant='danger'>{JSON.stringify(error)}</Alert>:""}
+                                            {error ? <Alert variant='danger'>{JSON.stringify(error)}</Alert> : ""}
                                             <Form onSubmit={SignUpSubmit}>
                                                 <Form.Group id='name'>
                                                     <Form.Label>Name</Form.Label>
-                                                    <Form.Control ref = {nameRef} type='text' required />
+                                                    <Form.Control ref={nameRef} type='text' required />
                                                 </Form.Group>
                                                 <Form.Group id='email'>
                                                     <Form.Label>Email</Form.Label>
-                                                    <Form.Control ref = {emailRef} type='email' required />
+                                                    <Form.Control ref={emailRef} type='email' required />
                                                 </Form.Group>
                                                 <Form.Group id='password'>
                                                     <Form.Label>Password</Form.Label>
-                                                    <Form.Control ref = {passwordRef} type='password' required />
+                                                    <Form.Control ref={passwordRef} type='password' required />
                                                 </Form.Group>
                                                 <Form.Group id='confirm-password'>
                                                     <Form.Label>Confirm Password</Form.Label>
-                                                    <Form.Control ref = {confirmPasswordRef} type='password' required />
+                                                    <Form.Control ref={confirmPasswordRef} type='password' required />
                                                 </Form.Group>
                                                 <Button disabled={loading} className='w-100' type='submit'>Sign Up</Button>
                                             </Form>
+                                            <div className='w-100 text-center mt-2'>
+                                                Already Have an Account?<Button style={{ color: "#007BFF", padding: "0 5px 0 5px", backgroundColor: "white", border: 0 }}
+                                                    onClick={() => {
+                                                        setIsSignIn(true)
+                                                    }}>Sign In</Button>
+                                            </div>
                                         </Card.Body>
                                     </Card>
                                 </div>}
