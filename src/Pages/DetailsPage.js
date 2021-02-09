@@ -17,6 +17,7 @@ import {
 export default function DetailsPage(props) {
     const [value, setValue] = React.useState(2);
     const [Review, setReview] = React.useState('anytning');
+    console.log(props.info.BookID)
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
