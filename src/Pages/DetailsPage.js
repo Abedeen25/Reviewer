@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Link } from 'react-router-dom';
 import Rating from '@material-ui/lab/Rating';
+import {postReview} from "../contexts/AuthContext";
 
 import {
     Card,
@@ -13,10 +14,33 @@ import {
     FormTextarea,
     Button
 } from "shards-react";
+import {db} from "../Services/FireService";
 
 export default function DetailsPage(props) {
     const [value, setValue] = React.useState(2);
-    const [Review, setReview] = React.useState('anytning');
+    const [Review, setReview] = React.useState('anything');
+    let data;
+
+    const PostReviewBtn = () =>{
+
+        //Getting Review
+        db.collection("review").doc("4muYDwAAQBAJ").get().then( doc => {
+            data = doc.data();
+            console.log(data);
+        });
+        // eslint-disable-next-line no-undef
+        if (data === undefined)
+        {
+            console.log("MAAL nai!");
+        }
+
+        //Setting Review
+        db.collection("review").doc("4muYDwAAQBAJ").collection("Reviews").doc("1").set({name:"Mentor Abedeen"}).then(function (){
+            console.log("WRITTEN SUCCESSFULLY!");
+        }).catch(function (error){
+            console.log("Error Writing Document : " , error);
+        })
+    }
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
@@ -97,7 +121,7 @@ export default function DetailsPage(props) {
                         <FormTextarea onChange={(event) => { setReview(event.target.value) }}></FormTextarea>
                         <div style={{ display: 'flex', margin: '2em 0 0 0' }}>
                             <div style={{ flex: 'auto' }}></div>
-                            <Button>Post Review</Button>
+                            <Button onClick={PostReviewBtn}>Post Review</Button>
                         </div>
                     </CardBody>
                 </Card>
