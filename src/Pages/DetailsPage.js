@@ -16,8 +16,10 @@ import {
 
 export default function DetailsPage(props) {
     const [value, setValue] = React.useState(2);
+    const [IsSignedIn, setIsSignedIn] = React.useState(true);
     const [Review, setReview] = React.useState('anytning');
     console.log(props.info.BookID)
+
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
@@ -76,32 +78,35 @@ export default function DetailsPage(props) {
                         </div>
                     </CardBody>
                 </Card>
-                <Card style={{ maxWidth: '750px', margin: '2em 2em 2em 0', width: 'auto', justifySelf: 'center', alignSelf: 'center', }}>
-                    <CardHeader style={{ display: 'flex' }}>
+                {IsSignedIn ? <div>
+                    <Card style={{ maxWidth: '750px', margin: '2em 2em 2em 0', width: 'auto', justifySelf: 'center', alignSelf: 'center', }}>
+                        <CardHeader style={{ display: 'flex' }}>
 
-                        <div style={{ display: 'flex' }}>Give a Review</div>
+                            <div style={{ display: 'flex' }}>Give a Review</div>
 
-                        <div style={{ flex: 'auto' }}></div>
-
-                        <div style={{ display: 'flex', }}>
-                            <Rating
-                                name="simple-controlled"
-                                value={value}
-                                onChange={(event, newValue) => {
-                                    setValue(newValue);
-                                }}
-                            /></div>
-
-                    </CardHeader>
-                    <CardBody>
-                        {Review}
-                        <FormTextarea onChange={(event) => { setReview(event.target.value) }}></FormTextarea>
-                        <div style={{ display: 'flex', margin: '2em 0 0 0' }}>
                             <div style={{ flex: 'auto' }}></div>
-                            <Button>Post Review</Button>
-                        </div>
-                    </CardBody>
-                </Card>
+
+                            <div style={{ display: 'flex', }}>
+                                <Rating
+                                    name="simple-controlled"
+                                    value={value}
+                                    onChange={(event, newValue) => {
+                                        setValue(newValue);
+                                    }}
+                                /></div>
+
+                        </CardHeader>
+                        <CardBody>
+                            {Review}
+                            <FormTextarea onChange={(event) => { setReview(event.target.value) }}></FormTextarea>
+                            <div style={{ display: 'flex', margin: '2em 0 0 0' }}>
+                                <div style={{ flex: 'auto' }}></div>
+                                <Button>Post Review</Button>
+                            </div>
+                        </CardBody>
+                    </Card>
+                </div> : <div> Not signed In</div>}
+
             </div>
         </div>
     );
