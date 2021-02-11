@@ -18,6 +18,9 @@ import {db} from "../Services/FireService";
 
 export default function DetailsPage(props) {
     const [value, setValue] = React.useState(2);
+    const [IsSignedIn, setIsSignedIn] = React.useState(true);
+    const [Review, setReview] = React.useState('anything');
+
     const [Review, setReview] = React.useState('anything');
     let data;
 
@@ -41,7 +44,7 @@ export default function DetailsPage(props) {
             console.log("Error Writing Document : " , error);
         })
     }
-
+    
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
             <div>
@@ -99,22 +102,24 @@ export default function DetailsPage(props) {
                         </div>
                     </CardBody>
                 </Card>
-                <Card style={{ maxWidth: '750px', margin: '2em 2em 2em 0', width: 'auto', justifySelf: 'center', alignSelf: 'center', }}>
-                    <CardHeader style={{ display: 'flex' }}>
+                {IsSignedIn ? <div>
+                    <Card style={{ maxWidth: '750px', margin: '2em 2em 2em 0', width: 'auto', justifySelf: 'center', alignSelf: 'center', }}>
+                        <CardHeader style={{ display: 'flex' }}>
 
-                        <div style={{ display: 'flex' }}>Give a Review</div>
+                            <div style={{ display: 'flex' }}>Give a Review</div>
 
-                        <div style={{ flex: 'auto' }}></div>
+                            <div style={{ flex: 'auto' }}></div>
 
-                        <div style={{ display: 'flex', }}>
-                            <Rating
-                                name="simple-controlled"
-                                value={value}
-                                onChange={(event, newValue) => {
-                                    setValue(newValue);
-                                }}
-                            /></div>
+                            <div style={{ display: 'flex', }}>
+                                <Rating
+                                    name="simple-controlled"
+                                    value={value}
+                                    onChange={(event, newValue) => {
+                                        setValue(newValue);
+                                    }}
+                                /></div>
 
+                        
                     </CardHeader>
                     <CardBody>
                         {Review}
@@ -125,6 +130,7 @@ export default function DetailsPage(props) {
                         </div>
                     </CardBody>
                 </Card>
+
             </div>
         </div>
     );

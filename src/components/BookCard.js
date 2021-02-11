@@ -30,8 +30,10 @@ const BookCard = (props) => {
                         <Link
                             to='/book_details'
                             onClick={() => {
-                                props.bookSetter(props.info)
-                                console.log(props.info)
+                                let temp = []
+                                temp = props.info
+                                temp.BookID = props.BookID
+                                props.bookSetter(temp)
                             }}
                         >See Details</Link>
                     </div>
