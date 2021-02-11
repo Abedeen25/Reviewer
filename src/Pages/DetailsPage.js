@@ -34,8 +34,8 @@ export default function DetailsPage(props) {
             console.log("MAAL nai!");
         }
 
-        //Setting Review
-        db.collection("review").doc("4muYDwAAQBAJ").collection("Reviews").doc("1").set({name:"Mentor Abedeen"}).then(function (){
+        //Posting Review
+        db.collection("review").doc(props.info.BookID).collection("Reviews").doc("1").set({name:"Mentor Abedeen"}).then(function (){
             console.log("WRITTEN SUCCESSFULLY!");
         }).catch(function (error){
             console.log("Error Writing Document : " , error);

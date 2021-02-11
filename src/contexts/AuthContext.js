@@ -20,8 +20,9 @@ const postReview = (BookID, reviewBody) =>{
 
 const AuthProvider = (props)=>{
     const [currentUser,setCurrentUser] = useState({});
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const signup = (email,password)=>{
-        return auth.createUserWithEmailAndPassword(email,password);
+        return auth.createUserWithEmailAndPassword(email,password)
     }
 
     const login = (email,password) =>{
@@ -50,7 +51,7 @@ const AuthProvider = (props)=>{
 
     return(
         <AuthContext.Provider value={{
-            currentUser, signup, login, logout, updateEmail, updatePassword, postReview
+            currentUser, signup, login, logout, updateEmail, updatePassword, postReview, setCurrentUser, isLoggedIn, setIsLoggedIn
         }}>
             {props.children}
         </AuthContext.Provider>
