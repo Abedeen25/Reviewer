@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Link } from 'react-router-dom';
 import Rating from '@material-ui/lab/Rating';
+import {postReview} from "../contexts/AuthContext";
 
 import {
     Card,
@@ -13,14 +14,37 @@ import {
     FormTextarea,
     Button
 } from "shards-react";
+import {db} from "../Services/FireService";
 
 export default function DetailsPage(props) {
     const [value, setValue] = React.useState(2);
     const [IsSignedIn, setIsSignedIn] = React.useState(true);
-    const [Review, setReview] = React.useState('anytning');
-    console.log(props.info.BookID)
+    const [Review, setReview] = React.useState('anything');
 
+    const [Review, setReview] = React.useState('anything');
+    let data;
 
+    const PostReviewBtn = () =>{
+
+        //Getting Review
+        db.collection("review").doc("4muYDwAAQBAJ").get().then( doc => {
+            data = doc.data();
+            console.log(data);
+        });
+        // eslint-disable-next-line no-undef
+        if (data === undefined)
+        {
+            console.log("MAAL nai!");
+        }
+
+        //Posting Review
+        db.collection("review").doc(props.info.BookID).collection("Reviews").doc("1").set({name:"Mentor Abedeen"}).then(function (){
+            console.log("WRITTEN SUCCESSFULLY!");
+        }).catch(function (error){
+            console.log("Error Writing Document : " , error);
+        })
+    }
+    
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
             <div>
@@ -95,17 +119,17 @@ export default function DetailsPage(props) {
                                     }}
                                 /></div>
 
-                        </CardHeader>
-                        <CardBody>
-                            {Review}
-                            <FormTextarea onChange={(event) => { setReview(event.target.value) }}></FormTextarea>
-                            <div style={{ display: 'flex', margin: '2em 0 0 0' }}>
-                                <div style={{ flex: 'auto' }}></div>
-                                <Button>Post Review</Button>
-                            </div>
-                        </CardBody>
-                    </Card>
-                </div> : <div> Not signed In</div>}
+                        
+                    </CardHeader>
+                    <CardBody>
+                        {Review}
+                        <FormTextarea onChange={(event) => { setReview(event.target.value) }}></FormTextarea>
+                        <div style={{ display: 'flex', margin: '2em 0 0 0' }}>
+                            <div style={{ flex: 'auto' }}></div>
+                            <Button onClick={PostReviewBtn}>Post Review</Button>
+                        </div>
+                    </CardBody>
+                </Card>
 
             </div>
         </div>

@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from "react";
-import {auth} from '../Services/FireService';
+import {auth, db} from '../Services/FireService';
 
 const AuthContext = React.createContext();
 
@@ -7,10 +7,22 @@ const useAuth = ()=>{
     return useContext(AuthContext);
 }
 
+const postReview = (BookID, reviewBody) =>{
+    console.log("ASHSE!");
+    var doc_ref = db.collection("review").doc(BookID.toString()).get();
+    console.log(BookID);
+    if (doc_ref.exists)
+    {
+        console.log("MAAL ACHE!");
+    }
+
+}
+
 const AuthProvider = (props)=>{
     const [currentUser,setCurrentUser] = useState({});
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const signup = (email,password)=>{
-        return auth.createUserWithEmailAndPassword(email,password);
+        return auth.createUserWithEmailAndPassword(email,password)
     }
 
     const login = (email,password) =>{
@@ -29,6 +41,7 @@ const AuthProvider = (props)=>{
         return currentUser.updatePassword(password)
     }
 
+
     useEffect(()=> {
         const unsubscribe = auth.onAuthStateChanged((user) => {
             setCurrentUser(user);
@@ -38,11 +51,11 @@ const AuthProvider = (props)=>{
 
     return(
         <AuthContext.Provider value={{
-            currentUser, signup, login, logout, updateEmail, updatePassword
+            currentUser, signup, login, logout, updateEmail, updatePassword, postReview, setCurrentUser, isLoggedIn, setIsLoggedIn
         }}>
             {props.children}
         </AuthContext.Provider>
     )
 }
 
-export {AuthContext,AuthProvider,useAuth};
+export {AuthContext,AuthProvider,useAuth, postReview};

@@ -17,6 +17,8 @@ import {
     NavItem,
     NavLink
 } from "shards-react";
+import {auth, db} from "../Services/FireService";
+import firebase from "firebase";
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -50,8 +52,10 @@ const Navibar = () => {
     const passwordRef = useRef();
     const nameRef = useRef();
     const confirmPasswordRef = useRef();
-    const { signup } = useAuth();
+    const {currentUser} = useAuth();
     const { login } = useAuth();
+    const {setIsLoggedIn} = useAuth();
+    const {setCurrentUser} = useAuth();
     const history = useHistory();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -62,9 +66,9 @@ const Navibar = () => {
         try {
             setLoading(true);
             setError('');
-            await login(emailRef.current.value, passwordRef.current.value).then(() => {
-                setIsSignedIn(true)
-            });
+
+            await login(emailRef.current.value, passwordRef.current.value).then((doc)=>{console.log(doc.user.uid)});
+
             history.push("/");
         } catch (error) {
             setError(error)
@@ -80,7 +84,17 @@ const Navibar = () => {
         try {
             setLoading(true);
             setError('');
-            await signup(emailRef.current.value, passwordRef.current.value);
+
+            await auth.createUserWithEmailAndPassword(emailRef.current.value,passwordRef.current.value).then((userCreds)=>{
+                userCreds.user.updateProfile({displayName: nameRef.current.value});
+                let userData = Object.assign({},{"Username": nameRef.current.value, "email":emailRef.current.value})
+                db.collection("users").doc(userCreds.user.uid).set(userData).then(()=>{
+                    console.log("USER REGISTERED SUCCESSFULLY!");
+                    //setIsLoggedIn(true);
+                    setCurrentUser(userData);
+                    console.log("Current user value: ",currentUser);
+                });
+            })
             history.push("/");
         } catch (error) {
             setError(error)
