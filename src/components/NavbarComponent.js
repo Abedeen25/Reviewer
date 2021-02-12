@@ -74,7 +74,7 @@ const Navibar = (props) => {
                 props.setCurrentUser(data)
                 props.setIsLoggedIn(true)
             });
-            history.push("/");
+            // history.push("/");
         } catch (error) {
             setError(error)
         }

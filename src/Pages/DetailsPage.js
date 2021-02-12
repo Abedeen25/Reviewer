@@ -25,9 +25,9 @@ export default function DetailsPage(props) {
     let data = 0;
 
     const GetReviews = async () => {
+        setListOfReviews([])
         //Getting Review
         await db.collection("review").doc(props.info.BookID).collection("Reviews").get().then(queryResult => {
-            setListOfReviews([])
             queryResult.forEach(doc => {
                 ListOfReviews.push(doc.data())
             })
@@ -71,7 +71,7 @@ export default function DetailsPage(props) {
             }
             )
             setListOfReviews(ListOfReviews)
-            console.log(ListOfReviews)
+            data += 1;
         }).catch(function (error) {
             console.log("Error Writing Document : ", error);
         })
@@ -172,21 +172,23 @@ export default function DetailsPage(props) {
                     </div>}
                 <div>
                     {ListOfReviews.map((rev, i) => {
-                        return (
-                            <Card style={{ maxWidth: '750px', margin: '2em 2em 2em 0', width: 'auto', justifySelf: 'center', alignSelf: 'center', }}>
-                                <CardHeader style={{ display: 'flex' }}>
-                                    <div style={{ display: 'flex' }}>{rev.Author}</div>
+                        if (rev.Comment !== '') {
+                            return (
+                                <Card style={{ maxWidth: '750px', margin: '2em 2em 2em 0', width: 'auto', justifySelf: 'center', alignSelf: 'center', }}>
+                                    <CardHeader style={{ display: 'flex' }}>
+                                        <div style={{ display: 'flex', fontWeight: "bold", color: '#006FE6' }}>{rev.Author}</div>
 
-                                    <div style={{ flex: 'auto' }}></div>
+                                        <div style={{ flex: 'auto' }}></div>
 
-                                    <div style={{ display: 'flex', }}>Rated: {rev.Rated} / 5.0</div>
-                                </CardHeader>
-                                <CardBody>{rev.Comment}
-                                    <p></p>
-                                </CardBody>
-                                <CardFooter style={{ textAlign: 'right' }}>{rev.time.toDate().toDateString().toString()}</CardFooter>
-                            </Card>
-                        )
+                                        <div style={{ display: 'flex', }}>Rated: {rev.Rated} / 5.0</div>
+                                    </CardHeader>
+                                    <CardBody>{rev.Comment}
+                                        <p></p>
+                                    </CardBody>
+                                    <CardFooter style={{ textAlign: 'right' }}>{rev.time.toDate().toDateString().toString()}</CardFooter>
+                                </Card>
+                            )
+                        }
                     })}
                 </div>
             </div>
