@@ -21,7 +21,8 @@ export default function DetailsPage(props) {
     const [Review, setReview] = React.useState('');
     const [ListOfReviews, setListOfReviews] = React.useState([])
     const [CumRatinge, setCumRatinge] = React.useState(0)
-    let data, len;
+    let len;
+    let data = 0;
 
     const GetReviews = async () => {
         //Getting Review
@@ -48,6 +49,7 @@ export default function DetailsPage(props) {
                 setCumRatinge(rat)
             }
         });
+        data += 1;
         // eslint-disable-next-line no-undef
 
     }
@@ -77,7 +79,7 @@ export default function DetailsPage(props) {
 
     useEffect(() => {
         GetReviews()
-    }, [])
+    }, data)
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
