@@ -1,5 +1,5 @@
-import React from 'react';
-
+import React, { useState, useEffect } from 'react';
+import firebase from 'firebase';
 import { Link } from 'react-router-dom';
 import Rating from '@material-ui/lab/Rating';
 import { postReview } from "../contexts/AuthContext";
@@ -17,29 +17,67 @@ import {
 import { db } from "../Services/FireService";
 
 export default function DetailsPage(props) {
-    const [value, setValue] = React.useState(2);
-    const [Review, setReview] = React.useState('anything');
-    let data;
+    const [RatingValue, setRatingValue] = React.useState(4);
+    const [Review, setReview] = React.useState('');
+    const [ListOfReviews, setListOfReviews] = React.useState([])
+    const [CumRatinge, setCumRatinge] = React.useState(0)
+    let data, len;
 
-    const PostReviewBtn = () => {
-
+    const GetReviews = async () => {
         //Getting Review
-        db.collection("review").doc("4muYDwAAQBAJ").get().then(doc => {
-            data = doc.data();
-            console.log(data);
+        await db.collection("review").doc(props.info.BookID).collection("Reviews").get().then(queryResult => {
+            setListOfReviews([])
+            queryResult.forEach(doc => {
+                ListOfReviews.push(doc.data())
+            })
+            ListOfReviews.reverse()
+            setListOfReviews(ListOfReviews)
+
+            if (ListOfReviews.length === 0) {
+                console.log("No review Yet!");
+                len = 0
+                setCumRatinge(0)
+            }
+            else {
+                let rat = 0
+                ListOfReviews.forEach(lst => {
+                    rat += lst.Rated
+                })
+                rat = rat / (ListOfReviews.length)
+                console.log(rat)
+                setCumRatinge(rat)
+            }
         });
         // eslint-disable-next-line no-undef
-        if (data === undefined) {
-            console.log("MAAL nai!");
-        }
 
-        //Posting Review
-        db.collection("review").doc(props.info.BookID).collection("Reviews").doc("1").set({ name: "Mentor Abedeen" }).then(function () {
+    }
+
+    const PostReviewBtn = async () => {
+        // Posting Review
+        db.collection("review").doc(props.info.BookID).collection("Reviews").doc(len).set({
+            Author: props.currentUser.Username,
+            Comment: Review,
+            Rated: RatingValue,
+            time: firebase.firestore.Timestamp.now()
+        }).then(function () {
             console.log("WRITTEN SUCCESSFULLY!");
+            ListOfReviews.push({
+                Author: props.currentUser.Username,
+                Comment: Review,
+                Rated: RatingValue,
+                time: firebase.firestore.Timestamp.now()
+            }
+            )
+            setListOfReviews(ListOfReviews)
+            console.log(ListOfReviews)
         }).catch(function (error) {
             console.log("Error Writing Document : ", error);
         })
     }
+
+    useEffect(() => {
+        GetReviews()
+    }, [])
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
@@ -57,7 +95,7 @@ export default function DetailsPage(props) {
                         />}
 
                     <CardBody style={{ background: 'white' }}>
-
+                        {(CumRatinge !== 0) ? <div><Rating name="read-only" value={CumRatinge} readOnly /></div> : <div>Not Rated Yet</div>}
                         <CardTitle>{props.info.title}</CardTitle>
 
                     </CardBody>
@@ -109,16 +147,15 @@ export default function DetailsPage(props) {
                             <div style={{ display: 'flex', }}>
                                 <Rating
                                     name="simple-controlled"
-                                    value={value}
+                                    value={RatingValue}
                                     onChange={(event, newValue) => {
-                                        setValue(newValue);
+                                        setRatingValue(newValue);
                                     }}
                                 /></div>
 
 
                         </CardHeader>
                         <CardBody>
-                            {Review}
                             <FormTextarea onChange={(event) => { setReview(event.target.value) }}></FormTextarea>
                             <div style={{ display: 'flex', margin: '2em 0 0 0' }}>
                                 <div style={{ flex: 'auto' }}></div>
@@ -128,9 +165,28 @@ export default function DetailsPage(props) {
                     </Card>
                 </div> : <div>
                         <Card style={{ maxWidth: '750px', margin: '2em 2em 2em 0', width: 'auto', justifySelf: 'center', alignSelf: 'center', }}>
-                            <CardHeader><h6 style={{ color: '#555', textAlign: 'center', paddingTop: '1em' }}>Please SignIn to give a Review</h6></CardHeader>
+                            <CardBody><h6 style={{ color: '#555', textAlign: 'center', paddingTop: '0.8em' }}>Please SignIn to give a Review</h6></CardBody>
                         </Card>
                     </div>}
+                <div>
+                    {ListOfReviews.map((rev, i) => {
+                        return (
+                            <Card style={{ maxWidth: '750px', margin: '2em 2em 2em 0', width: 'auto', justifySelf: 'center', alignSelf: 'center', }}>
+                                <CardHeader style={{ display: 'flex' }}>
+                                    <div style={{ display: 'flex' }}>{rev.Author}</div>
+
+                                    <div style={{ flex: 'auto' }}></div>
+
+                                    <div style={{ display: 'flex', }}>Rated: {rev.Rated} / 5.0</div>
+                                </CardHeader>
+                                <CardBody>{rev.Comment}
+                                    <p></p>
+                                </CardBody>
+                                <CardFooter style={{ textAlign: 'right' }}>{rev.time.toDate().toDateString().toString()}</CardFooter>
+                            </Card>
+                        )
+                    })}
+                </div>
             </div>
         </div>
     );
