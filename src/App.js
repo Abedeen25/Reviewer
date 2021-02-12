@@ -16,6 +16,8 @@ const App = () => {
   const [StartIndex, setStartIndex] = useState(0);
   const [Pagelist, setPagelist] = useState([]);
   const [CheckBook, setCheckBook] = useState([]);
+  const [currentUser, setCurrentUser] = useState([]);
+  const [IsLoggedIn, setIsLoggedIn] = useState(false)
 
   const ItemPerPage = 30
 
@@ -35,7 +37,7 @@ const App = () => {
   return (
     <div>
       <BrowserRouter>
-        <Navibar />
+        <Navibar setCurrentUser={setCurrentUser} setIsLoggedIn={setIsLoggedIn} currentUser={currentUser} IsLoggedIn={IsLoggedIn} />
         <div>
           <Route path="/" exact>
             <SearchComponent
@@ -54,7 +56,7 @@ const App = () => {
           </Route>
 
           <Route path='/book_details' exact>
-            <DetailsPage info={CheckBook} />
+            <DetailsPage info={CheckBook} currentUser={currentUser} IsLoggedIn={IsLoggedIn} />
           </Route>
         </div>
       </BrowserRouter>

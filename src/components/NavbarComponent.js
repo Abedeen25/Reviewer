@@ -17,7 +17,7 @@ import {
     NavItem,
     NavLink
 } from "shards-react";
-import {auth, db} from "../Services/FireService";
+import { auth, db } from "../Services/FireService";
 import firebase from "firebase";
 
 const useStyles = makeStyles((theme) => ({
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Navibar = () => {
+const Navibar = (props) => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [ShowSignIn, setShowSignIn] = React.useState(true);
@@ -52,13 +52,14 @@ const Navibar = () => {
     const passwordRef = useRef();
     const nameRef = useRef();
     const confirmPasswordRef = useRef();
-    const {currentUser} = useAuth();
+    const { currentUser } = useAuth();
     const { login } = useAuth();
-    const {setIsLoggedIn} = useAuth();
-    const {setCurrentUser} = useAuth();
+    const { setIsLoggedIn } = useAuth();
+    const { setCurrentUser } = useAuth();
     const history = useHistory();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    let tempVar = '';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -67,8 +68,12 @@ const Navibar = () => {
             setLoading(true);
             setError('');
 
-            await login(emailRef.current.value, passwordRef.current.value).then((doc)=>{console.log(doc.user.uid)});
-
+            await login(emailRef.current.value, passwordRef.current.value).then((doc) => { tempVar = doc.user.uid });
+            db.collection("users").doc(tempVar).get().then(doc => {
+                let data = doc.data();
+                props.setCurrentUser(data)
+                props.setIsLoggedIn(true)
+            });
             history.push("/");
         } catch (error) {
             setError(error)
@@ -85,14 +90,14 @@ const Navibar = () => {
             setLoading(true);
             setError('');
 
-            await auth.createUserWithEmailAndPassword(emailRef.current.value,passwordRef.current.value).then((userCreds)=>{
-                userCreds.user.updateProfile({displayName: nameRef.current.value});
-                let userData = Object.assign({},{"Username": nameRef.current.value, "email":emailRef.current.value})
-                db.collection("users").doc(userCreds.user.uid).set(userData).then(()=>{
+            await auth.createUserWithEmailAndPassword(emailRef.current.value, passwordRef.current.value).then((userCreds) => {
+                userCreds.user.updateProfile({ displayName: nameRef.current.value });
+                let userData = Object.assign({}, { "Username": nameRef.current.value, "email": emailRef.current.value })
+                db.collection("users").doc(userCreds.user.uid).set(userData).then(() => {
                     console.log("USER REGISTERED SUCCESSFULLY!");
                     //setIsLoggedIn(true);
                     setCurrentUser(userData);
-                    console.log("Current user value: ",currentUser);
+                    console.log("Current user value: ", currentUser);
                 });
             })
             history.push("/");
@@ -111,7 +116,11 @@ const Navibar = () => {
                     {IsSignedIn ? <div>
                         <Button theme="light">profile</Button>
                     </div> : <div>
-                            <Button theme="light" onClick={handleOpen}>Sign In</Button>
+                            {props.IsLoggedIn ? <Button theme="light" onClick={() => {
+                                props.setCurrentUser([])
+                                props.setIsLoggedIn(false)
+                            }}>SignOut</Button> : <Button theme="light" onClick={handleOpen}>Sign In</Button>
+                            }
                         </div>}
 
                 </NavItem>
